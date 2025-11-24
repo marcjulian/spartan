@@ -6,7 +6,6 @@ import {
 	ScrollStrategyOptions,
 } from '@angular/cdk/overlay';
 import {
-	ApplicationRef,
 	type EffectRef,
 	type InjectOptions,
 	Injectable,
@@ -52,7 +51,6 @@ export class BrnDialogService {
 	private readonly _positionBuilder = inject(OverlayPositionBuilder);
 	private readonly _sso = inject(ScrollStrategyOptions);
 	private readonly _injector = inject(Injector);
-	private readonly _appRef = inject(ApplicationRef);
 
 	public open<DialogContext>(
 		content: ComponentType<unknown> | TemplateRef<unknown>,
