@@ -6,6 +6,7 @@ import {
 	ScrollStrategyOptions,
 } from '@angular/cdk/overlay';
 import {
+	ApplicationRef,
 	type EffectRef,
 	type InjectOptions,
 	Injectable,
@@ -51,6 +52,7 @@ export class BrnDialogService {
 	private readonly _positionBuilder = inject(OverlayPositionBuilder);
 	private readonly _sso = inject(ScrollStrategyOptions);
 	private readonly _injector = inject(Injector);
+	private readonly _appRef = inject(ApplicationRef);
 
 	public open<DialogContext>(
 		content: ComponentType<unknown> | TemplateRef<unknown>,
@@ -173,6 +175,11 @@ export class BrnDialogService {
 			effectRef?.destroy();
 			destroyed$.next();
 		});
+
+		// this is not ideal, but we need to force change detection to run in the dialog,
+		// otherwise in some conditions (like menu launching a dialog) the dialog content
+		// does not render.
+		(cdkDialogRef.containerInstance as any)._changeDetectorRef.detectChanges();
 
 		return brnDialogRef;
 	}
