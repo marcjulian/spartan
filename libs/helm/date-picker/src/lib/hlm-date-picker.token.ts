@@ -12,6 +12,7 @@ export interface HlmDatePickerBase {
 	popover: Signal<BrnPopover>;
 	disabledState: Signal<boolean>;
 	formattedDate: Signal<string | undefined>;
+	updateDate: (date: unknown) => void;
 }
 
 export const HlmDatePickerToken = new InjectionToken<HlmDatePickerBase>('HlmDatePickerToken');
@@ -48,6 +49,14 @@ export interface HlmDatePickerConfig<T> {
 	 * @returns transformed date
 	 */
 	transformDate: (date: T) => T;
+
+	/**
+	 * Defines how the string value should be parsed to a date.
+	 *
+	 * @param value
+	 * @returns parsed date
+	 */
+	parseDate?: (value: string) => T | undefined;
 }
 
 function getDefaultConfig<T>(): HlmDatePickerConfig<T> {
@@ -55,6 +64,10 @@ function getDefaultConfig<T>(): HlmDatePickerConfig<T> {
 		formatDate: (date) => (date instanceof Date ? date.toDateString() : `${date}`),
 		transformDate: (date) => date,
 		autoCloseOnSelect: false,
+		parseDate: (value) => {
+			const date = new Date(value);
+			return !isNaN(date.getTime()) ? (date as T) : undefined;
+		},
 	};
 }
 

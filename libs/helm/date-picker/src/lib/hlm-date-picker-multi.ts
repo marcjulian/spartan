@@ -112,6 +112,10 @@ export class HlmDatePickerMulti<T> implements HlmDatePickerBase, ControlValueAcc
 		return dates ? this.formatDates()(dates) : undefined;
 	});
 
+	public updateDate(date: unknown) {
+		this._handleChange(date as T[]);
+	}
+
 	public readonly dateChange = output<T[]>();
 
 	protected _onChange?: ChangeFn<T[]>;

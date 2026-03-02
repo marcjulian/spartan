@@ -111,6 +111,18 @@ export class HlmDateRangePicker<T> implements HlmDatePickerBase, ControlValueAcc
 		return start || end ? this.formatDates()([start, end]) : undefined;
 	});
 
+	public updateDate(date: unknown) {
+		const value = date as [T, T];
+		if (this._disabled()) return;
+		const transformedDates = this.transformDates()(value);
+		this._mutableDate.set(transformedDates);
+		this.dateChange.emit(transformedDates);
+		this._onChange?.(transformedDates);
+		if (this.autoCloseOnEndSelection()) {
+			this._popoverState.set('closed');
+		}
+	}
+
 	public readonly dateChange = output<[T, T] | null>();
 
 	protected _onChange?: ChangeFn<[T, T] | null>;
