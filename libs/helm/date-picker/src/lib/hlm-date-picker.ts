@@ -98,6 +98,10 @@ export class HlmDatePicker<T> implements HlmDatePickerBase, ControlValueAccessor
 		return date ? this.formatDate()(date) : undefined;
 	});
 
+	public updateDate(date: unknown) {
+		this._handleChange(date as T);
+	}
+
 	public readonly dateChange = output<T>();
 
 	protected _onChange?: ChangeFn<T>;
