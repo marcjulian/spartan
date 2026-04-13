@@ -41,8 +41,8 @@ export const BRN_TOOLTIP_FALLBACK_POSITIONS: Record<BrnTooltipPosition, BrnToolt
 	right: ['left', 'top', 'bottom'],
 };
 
-/** Map a resolved CDK ConnectedPosition back to a BrnTooltipPosition. */
-export function resolveTooltipPosition(pair: ConnectedPosition): BrnTooltipPosition {
+/** Map a resolved CDK ConnectedPosition back to a BrnTooltipPosition, or null if no match. */
+export function resolveTooltipPosition(pair: ConnectedPosition): BrnTooltipPosition | null {
 	for (const [pos, config] of Object.entries(BRN_TOOLTIP_POSITIONS_MAP)) {
 		if (
 			pair.originX === config.originX &&
@@ -53,5 +53,5 @@ export function resolveTooltipPosition(pair: ConnectedPosition): BrnTooltipPosit
 			return pos as BrnTooltipPosition;
 		}
 	}
-	return 'top';
+	return null;
 }

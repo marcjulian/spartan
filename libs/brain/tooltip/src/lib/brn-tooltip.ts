@@ -29,8 +29,8 @@ import {
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
 import { Directionality } from '@angular/cdk/bidi';
-import { of, Subject, timer } from 'rxjs';
-import { map, switchMap, take } from 'rxjs/operators';
+import { of, Subject, Subscription, timer } from 'rxjs';
+import { map, switchMap } from 'rxjs/operators';
 import { BrnTooltipContent } from './brn-tooltip-content';
 import {
 	BRN_TOOLTIP_FALLBACK_POSITIONS,
@@ -65,6 +65,7 @@ export class BrnTooltip {
 	private _componentRef: ComponentRef<BrnTooltipContent> | undefined = undefined;
 	private _overlayRef: OverlayRef | undefined = undefined;
 	private _ariaEffectRef: ReturnType<typeof effect> | undefined = undefined;
+	private _positionChangeSub: Subscription | undefined = undefined;
 
 	public readonly tooltipDisabled = input<boolean, boolean>(false, { transform: booleanAttribute });
 	public readonly mutableTooltipDisabled = linkedSignal(this.tooltipDisabled);
@@ -228,23 +229,26 @@ export class BrnTooltip {
 			this._config.svgClasses,
 		);
 
-		// When the CDK flips the tooltip to a fallback position, update the arrow
-		// direction and CSS classes so they match the actual rendered side.
+		// Subscribe to position changes for the lifetime of the tooltip so that
+		// arrow direction and CSS classes stay in sync when the CDK flips the
+		// overlay (initial show, viewport resize, scroll, etc.).
 		const strategy = this._overlayRef?.getConfig().positionStrategy as FlexibleConnectedPositionStrategy | undefined;
 		if (strategy && this._componentRef) {
 			const compRef = this._componentRef;
-			strategy.positionChanges.pipe(take(1), takeUntilDestroyed(this._destroyRef)).subscribe((change) => {
-				const resolved = resolveTooltipPosition(change.connectionPair);
-				if (resolved !== this.position()) {
-					compRef.instance.setProps(
-						null,
-						resolved,
-						this._config.tooltipContentClasses,
-						this._config.arrowClasses(resolved),
-						this._config.svgClasses,
-					);
-				}
-			});
+			this._positionChangeSub = strategy.positionChanges
+				.pipe(takeUntilDestroyed(this._destroyRef))
+				.subscribe((change) => {
+					const resolved = resolveTooltipPosition(change.connectionPair);
+					if (resolved) {
+						compRef.instance.setProps(
+							null,
+							resolved,
+							this._config.tooltipContentClasses,
+							this._config.arrowClasses(resolved),
+							this._config.svgClasses,
+						);
+					}
+				});
 		}
 
 		runInInjectionContext(this._injector, () => {
@@ -263,6 +267,8 @@ export class BrnTooltip {
 	private _hide(): void {
 		if (!this._componentRef || this._tooltipHovered) return;
 		this._clearAriaDescribedBy();
+		this._positionChangeSub?.unsubscribe();
+		this._positionChangeSub = undefined;
 
 		this._renderer.removeAttribute(this._elementRef.nativeElement, 'aria-describedby');
 		this._componentRef.instance.state.set('closed');
