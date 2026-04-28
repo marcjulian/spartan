@@ -26,7 +26,7 @@ import { HlmFieldImports } from '@spartan-ng/helm/field';
 							</hlm-field-description>
 							<hlm-field-group>
 								<hlm-field orientation="horizontal">
-									<hlm-checkbox id="responses" formControlName="responses" />
+									<hlm-checkbox inputId="responses" formControlName="responses" />
 									<label hlmFieldLabel class="font-normal" for="responses">Push notifications</label>
 								</hlm-field>
 							</hlm-field-group>
@@ -43,7 +43,7 @@ import { HlmFieldImports } from '@spartan-ng/helm/field';
 											[forceInvalid]="form.controls.tasks.invalid && form.controls.tasks.touched"
 										>
 											<hlm-checkbox
-												[id]="'task-' + task.id"
+												[inputId]="'task-' + task.id"
 												[forceInvalid]="form.controls.tasks.invalid && form.controls.tasks.touched"
 												[checked]="form.controls.tasks.value.includes(task.id)"
 												(checkedChange)="handleChange($event, task.id)"
@@ -142,7 +142,7 @@ import { HlmFieldImports } from '@spartan-ng/helm/field';
 							</hlm-field-description>
 							<hlm-field-group>
 								<hlm-field orientation="horizontal">
-									<hlm-checkbox id="responses" formControlName="responses" />
+									<hlm-checkbox inputId="responses" formControlName="responses" />
 									<label hlmFieldLabel class="font-normal" for="responses">Push notifications</label>
 								</hlm-field>
 							</hlm-field-group>
@@ -156,7 +156,7 @@ import { HlmFieldImports } from '@spartan-ng/helm/field';
 									@for (task of tasks; track task.id) {
 										<hlm-field orientation="horizontal">
 											<hlm-checkbox
-												[id]="'task-' + task.id"
+												[inputId]="'task-' + task.id"
 												[checked]="form.controls.tasks.value.includes(task.id)"
 												(checkedChange)="handleChange($event, task.id)"
 											/>
