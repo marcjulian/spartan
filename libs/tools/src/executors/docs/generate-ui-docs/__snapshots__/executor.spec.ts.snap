@@ -3791,6 +3791,11 @@ exports[`generate-ui-docs executor produces stable output 1`] = `
       "HlmPaginationNext": {
         "inputs": [
           {
+            "name": "class",
+            "required": false,
+            "type": "ClassValue",
+          },
+          {
             "name": "link",
             "required": false,
             "type": "RouterLink['routerLink']",
@@ -3827,6 +3832,11 @@ exports[`generate-ui-docs executor produces stable output 1`] = `
       },
       "HlmPaginationPrevious": {
         "inputs": [
+          {
+            "name": "class",
+            "required": false,
+            "type": "ClassValue",
+          },
           {
             "name": "link",
             "required": false,
