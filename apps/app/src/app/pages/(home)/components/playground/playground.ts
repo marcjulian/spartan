@@ -76,7 +76,7 @@ import { PRESETS_DATA } from './data/presets';
 								<button hlmBtn>Submit</button>
 								<button hlmBtn variant="secondary" size="icon">
 									<span class="sr-only">Show history</span>
-									<ng-icon hlm name="tablerRotate" />
+									<ng-icon name="tablerRotate" />
 								</button>
 							</div>
 						</div>
@@ -96,7 +96,7 @@ import { PRESETS_DATA } from './data/presets';
 								<button hlmBtn>Submit</button>
 								<button hlmBtn variant="secondary" size="icon">
 									<span class="sr-only">Show history</span>
-									<ng-icon hlm name="tablerRotate" />
+									<ng-icon name="tablerRotate" />
 								</button>
 							</div>
 						</div>
@@ -122,7 +122,7 @@ import { PRESETS_DATA } from './data/presets';
 								<button hlmBtn>Submit</button>
 								<button hlmBtn variant="secondary" size="icon">
 									<span class="sr-only">Show history</span>
-									<ng-icon hlm name="tablerRotate" />
+									<ng-icon name="tablerRotate" />
 								</button>
 							</div>
 						</div>
