@@ -1,4 +1,5 @@
-import { computed, Directive, ElementRef, inject, input } from '@angular/core';
+import { computed, Directive, effect, ElementRef, inject, input } from '@angular/core';
+import { injectElementSize } from '@spartan-ng/brain/core';
 import { BrnDialog } from '@spartan-ng/brain/dialog';
 import { injectBrnSelectBase } from './brn-select.token';
 
@@ -28,6 +29,8 @@ export class BrnSelectTrigger {
 
 	private readonly _select = injectBrnSelectBase();
 
+	private readonly _elementSize = injectElementSize();
+
 	public readonly id = input<string>(`brn-select-trigger-${++BrnSelectTrigger._id}`);
 
 	/** Whether the combobox panel is expanded */
@@ -48,6 +51,14 @@ export class BrnSelectTrigger {
 		if (this._brnDialog) {
 			this._brnDialog.mutableAttachTo.set(this._host.nativeElement);
 		}
+
+		effect(() => {
+			const size = this._elementSize();
+			if (size) {
+				this._select.updateTriggerWidth(size.width);
+				this._brnDialog?.updatePosition();
+			}
+		});
 	}
 
 	protected open() {
