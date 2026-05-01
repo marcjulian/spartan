@@ -1,4 +1,8 @@
 .style-vega :where(:not([class~='not-style-vega'], [class~='not-style-vega'] *)) {
+	&.spartan-rtl-flip {
+		@apply rtl:rotate-180;
+	}
+
 	/* MARK: Accordion */
 	&.spartan-accordion-item {
 		@apply not-last:border-b;
@@ -871,11 +875,11 @@
 	}
 
 	&.spartan-pagination-previous {
-		@apply pl-2!;
+		@apply ps-2!;
 	}
 
 	&.spartan-pagination-next {
-		@apply pr-2!;
+		@apply pe-2!;
 	}
 
 	/* MARK: Popover */

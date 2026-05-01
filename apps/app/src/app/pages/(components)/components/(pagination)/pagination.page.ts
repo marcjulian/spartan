@@ -1,6 +1,8 @@
 import type { RouteMeta } from '@analogjs/router';
 import { Component, computed, inject } from '@angular/core';
 import { PrimitiveSnippetsService } from '@spartan-ng/app/app/core/services/primitive-snippets.service';
+import { CodeRtlPreview } from '@spartan-ng/app/app/shared/code/code-rtl-preview';
+import { RtlHeader } from '@spartan-ng/app/app/shared/code/rtl-header';
 import { InstallTabs } from '@spartan-ng/app/app/shared/layout/install-tabs';
 import { SectionSubSubHeading } from '@spartan-ng/app/app/shared/layout/section-sub-sub-heading';
 import { hlmCode } from '@spartan-ng/helm/typography';
@@ -19,6 +21,7 @@ import { PaginationAdvancedQuery } from './pagination--advanced-query.example';
 import { PaginationAdvanced } from './pagination--advanced.example';
 import { PaginationIconOnly } from './pagination--icon-only.example';
 import { PaginationQueryParams } from './pagination--query-params.example';
+import { PaginationRtl } from './pagination--rtl.example';
 import { PaginationPreview, defaultImports, defaultSkeleton } from './pagination.preview';
 
 export const routeMeta: RouteMeta = {
@@ -40,6 +43,9 @@ export const routeMeta: RouteMeta = {
 
 		CodePreview,
 		PageNav,
+		SectionSubSubHeading,
+		RtlHeader,
+		CodeRtlPreview,
 		PageBottomNav,
 		PageBottomNavLink,
 		PaginationPreview,
@@ -47,11 +53,15 @@ export const routeMeta: RouteMeta = {
 		PaginationIconOnly,
 		PaginationAdvanced,
 		PaginationAdvancedQuery,
-		SectionSubSubHeading,
+		PaginationRtl,
 	],
 	template: `
 		<section spartanMainSection>
-			<spartan-section-intro name="Pagination" lead="Pagination with page navigation, next and previous links." />
+			<spartan-section-intro
+				name="Pagination"
+				lead="Pagination with page navigation, next and previous links."
+				showThemeToggle
+			/>
 
 			<spartan-tabs firstTab="Preview" secondTab="Code">
 				<div spartanCodePreview firstTab>
@@ -60,7 +70,7 @@ export const routeMeta: RouteMeta = {
 				<spartan-code secondTab [code]="_defaultCode()" />
 			</spartan-tabs>
 
-			<spartan-install-tabs primitive="pagination" />
+			<spartan-install-tabs primitive="pagination" [showOnlyVega]="false" />
 
 			<spartan-section-sub-heading id="usage">Usage</spartan-section-sub-heading>
 			<div class="mt-6 space-y-4">
@@ -105,6 +115,14 @@ export const routeMeta: RouteMeta = {
 				<spartan-code secondTab [code]="_advancedQueryCode()" />
 			</spartan-tabs>
 
+			<spartan-header-rtl />
+			<spartan-tabs firstTab="Preview" secondTab="Code">
+				<div spartanRtlCodePreview firstTab>
+					<spartan-pagination-rtl />
+				</div>
+				<spartan-code secondTab [code]="_rtlCode()" />
+			</spartan-tabs>
+
 			<spartan-section-sub-heading id="hlm-api">Helm API</spartan-section-sub-heading>
 			<spartan-ui-api-docs docType="helm" />
 
@@ -123,6 +141,7 @@ export default class PaginationPage {
 	protected readonly _iconOnlyCode = computed(() => this._snippets()['iconOnly']);
 	protected readonly _advancedCode = computed(() => this._snippets()['advanced']);
 	protected readonly _advancedQueryCode = computed(() => this._snippets()['advancedQuery']);
+	protected readonly _rtlCode = computed(() => this._snippets()['rtl']);
 	protected readonly _defaultSkeleton = defaultSkeleton;
 	protected readonly _defaultImports = defaultImports;
 }
