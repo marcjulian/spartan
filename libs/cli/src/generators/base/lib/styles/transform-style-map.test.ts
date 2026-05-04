@@ -386,6 +386,10 @@ export class HlmButton {
 
         public readonly size = input<ButtonVariants['size']>(this._config.size);
 
+        protected readonly _computedClass = computed(() =>
+					hlm(!this.iconOnly() && 'spartan-button-size-xs', this.userClass()),
+				);
+
         constructor() {
                 classes(() => [buttonVariants({ variant: this.variant(), size: this.size() }), this._additionalClasses()]);
         }
@@ -454,6 +458,10 @@ export class HlmButton {
         public readonly variant = input<ButtonVariants['variant']>(this._config.variant);
 
         public readonly size = input<ButtonVariants['size']>(this._config.size);
+
+        protected readonly _computedClass = computed(() =>
+					hlm(!this.iconOnly() && 'h-6 gap-1 rounded-[min(var(--radius-md),8px)] px-2 text-xs in-data-[slot=button-group]:rounded-md has-data-[icon=inline-end]:pe-1.5 has-data-[icon=inline-start]:ps-1.5 [&_ng-icon:not([class*=\\'text-\\'])]:text-sm', this.userClass()),
+				);
 
         constructor() {
                 classes(() => [buttonVariants({ variant: this.variant(), size: this.size() }), this._additionalClasses()]);

@@ -19,8 +19,8 @@ function isStringLiteralLike(node: Node): node is StringLiteral | NoSubstitution
 
 export const transformStyleMap: TransformerStyle<SourceFile> = async ({ sourceFile, styleMap }) => {
 	const matchedClasses = new Set<string>();
-	applyToHlmCalls(sourceFile, styleMap, matchedClasses);
-	applyToClassesCalls(sourceFile, styleMap, matchedClasses);
+	applyToHlmCalls(sourceFile, styleMap);
+	applyToClassesCalls(sourceFile, styleMap);
 	applyToHtmlInStrings(sourceFile, styleMap, matchedClasses);
 	applyToRawHtml(sourceFile, styleMap, matchedClasses);
 	applyToCvaCalls(sourceFile, styleMap, matchedClasses);
@@ -92,7 +92,7 @@ function applyToHtmlInStrings(sourceFile: SourceFile, styleMap: StyleMap, matche
 	});
 }
 
-function applyToClassesCalls(sourceFile: SourceFile, styleMap: StyleMap, matchedClasses: Set<string>) {
+function applyToClassesCalls(sourceFile: SourceFile, styleMap: StyleMap) {
 	sourceFile.forEachDescendant((node) => {
 		if (!Node.isCallExpression(node)) return;
 
@@ -105,32 +105,32 @@ function applyToClassesCalls(sourceFile: SourceFile, styleMap: StyleMap, matched
 		const body = firstArg.getBody();
 
 		if (isStringLiteralLike(body)) {
-			applyStyle(body, styleMap, matchedClasses);
+			applyStyle(body, styleMap);
 			return;
 		}
 
 		if (Node.isArrayLiteralExpression(body)) {
-			applyToArrayLiteral(body, styleMap, matchedClasses);
+			applyToArrayLiteral(body, styleMap);
 		}
 	});
 }
 
-function applyToArrayLiteral(arrayNode: ArrayLiteralExpression, styleMap: StyleMap, matchedClasses: Set<string>) {
+function applyToArrayLiteral(arrayNode: ArrayLiteralExpression, styleMap: StyleMap) {
 	for (const element of arrayNode.getElements()) {
 		if (isStringLiteralLike(element)) {
-			applyStyle(element, styleMap, matchedClasses);
+			applyStyle(element, styleMap);
 			continue;
 		}
 
 		element.forEachDescendant((node) => {
 			if (isStringLiteralLike(node)) {
-				applyStyle(node, styleMap, matchedClasses);
+				applyStyle(node, styleMap);
 			}
 		});
 	}
 }
 
-function applyToHlmCalls(sourceFile: SourceFile, styleMap: StyleMap, matchedClasses: Set<string>) {
+function applyToHlmCalls(sourceFile: SourceFile, styleMap: StyleMap) {
 	sourceFile.forEachDescendant((node) => {
 		if (!Node.isCallExpression(node)) return;
 
@@ -138,33 +138,34 @@ function applyToHlmCalls(sourceFile: SourceFile, styleMap: StyleMap, matchedClas
 		if (!Node.isIdentifier(expression) || expression.getText() !== 'hlm') return;
 
 		for (const arg of node.getArguments()) {
-			if (!isStringLiteralLike(arg)) continue;
-			applyStyle(arg, styleMap, matchedClasses);
+			if (isStringLiteralLike(arg)) {
+				applyStyle(arg, styleMap);
+				continue;
+			}
+
+			arg.forEachDescendant((descendant) => {
+				if (isStringLiteralLike(descendant)) {
+					applyStyle(descendant, styleMap);
+				}
+			});
 		}
 
 		removeEmptyArgumentsFromHlm(node);
 	});
 }
 
-function applyStyle(
-	stringNode: StringLiteral | NoSubstitutionTemplateLiteral,
-	styleMap: StyleMap,
-	matchedClasses: Set<string>,
-) {
+function applyStyle(stringNode: StringLiteral | NoSubstitutionTemplateLiteral, styleMap: StyleMap) {
 	const value = stringNode.getLiteralText();
 	const classes = extractSpartanClasses(value);
 
 	if (!classes.length) return;
 
-	const unmatched = classes.filter((c) => !matchedClasses.has(c));
-
-	const tailwind = unmatched.map((c) => styleMap[c]).filter((v): v is string => Boolean(v));
+	const tailwind = classes.map((c) => styleMap[c]).filter((v): v is string => Boolean(v));
 
 	let updated = value;
 
 	if (tailwind.length) {
 		updated = mergeClasses(tailwind.join(' '), value);
-		unmatched.forEach((c) => matchedClasses.add(c));
 	}
 
 	updated = removeSpartanClasses(updated);
