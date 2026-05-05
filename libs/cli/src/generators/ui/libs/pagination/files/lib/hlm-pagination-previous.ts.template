@@ -46,7 +46,7 @@ export class HlmPaginationPrevious {
 		transform: booleanAttribute,
 	});
 	protected readonly _labelClass = computed(() =>
-		this.iconOnly() ? 'sr-only' : 'spartan-pagination-previous-text hidden sm:block',
+		hlm(this.iconOnly() ? 'sr-only' : 'spartan-pagination-previous-text hidden sm:block'),
 	);
 
 	protected readonly _size = computed<ButtonVariants['size']>(() => (this.iconOnly() ? 'icon' : 'default'));
