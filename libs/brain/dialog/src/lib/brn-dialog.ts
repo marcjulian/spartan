@@ -25,6 +25,7 @@ import type { BrnDialogOptions } from './brn-dialog-options';
 import type { BrnDialogRef } from './brn-dialog-ref';
 import type { BrnDialogState } from './brn-dialog-state';
 import { injectBrnDialogDefaultOptions } from './brn-dialog-token';
+import { cssClassesToArray } from './brn-dialog-utils';
 import { BrnDialogService } from './brn-dialog.service';
 
 @Directive({
@@ -94,8 +95,8 @@ export class BrnDialog<TResult = unknown, TContext extends Record<string, unknow
 			autoFocus: this.autoFocus(),
 			closeDelay: this.closeDelay(),
 			disableClose: this.disableClose(),
-			backdropClass: this._backdropClass() ?? '',
-			panelClass: this._panelClass() ?? '',
+			backdropClass: this._backdropClass() ?? cssClassesToArray(this._defaultOptions.backdropClass),
+			panelClass: this._panelClass() ?? cssClassesToArray(this._defaultOptions.panelClass),
 			ariaDescribedBy: this._mutableAriaDescribedBy(),
 			ariaLabelledBy: this._mutableAriaLabelledBy(),
 			ariaLabel: this._mutableAriaLabel(),
