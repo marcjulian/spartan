@@ -1,6 +1,7 @@
 import { type BooleanInput, type NumberInput } from '@angular/cdk/coercion';
 import { OverlayPositionBuilder, type ScrollStrategy, ScrollStrategyOptions } from '@angular/cdk/overlay';
 import {
+	afterNextRender,
 	booleanAttribute,
 	computed,
 	DestroyRef,
@@ -105,14 +106,21 @@ export class BrnDialog<TResult = unknown, TContext extends Record<string, unknow
 	});
 
 	constructor() {
-		effect(() => {
-			const state = this.state();
-			if (state === 'open') {
-				untracked(() => this.open());
-			}
-			if (state === 'closed') {
-				untracked(() => this.close());
-			}
+		afterNextRender(() => {
+			effect(
+				() => {
+					const state = this.state();
+					if (state === 'open') {
+						untracked(() => this.open());
+					}
+					if (state === 'closed') {
+						untracked(() => this.close());
+					}
+				},
+				{
+					injector: this._injector,
+				},
+			);
 		});
 	}
 
